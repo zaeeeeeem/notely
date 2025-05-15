@@ -10,6 +10,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $notesModel = new Notes($pdo);
 $notes = $notesModel->getNotes($_SESSION['user_id']);
+
+// Safely get user data from session with fallbacks
+$username = $_SESSION['username'] ?? 'Guest';
+$email = $_SESSION['email'] ?? '';
+$avatarInitial = strtoupper(substr($username, 0, 1));
 ?>
 
 <!DOCTYPE html>
@@ -26,8 +31,7 @@ $notes = $notesModel->getNotes($_SESSION['user_id']);
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="dashboard.php" class="logo">
-                <img src="https://via.placeholder.com/32x32" alt="Notely Logo">
+            <a href="dashboard.php" class="logo">       
                 <span>Notely</span>
             </a>
         </div>
@@ -73,16 +77,12 @@ $notes = $notesModel->getNotes($_SESSION['user_id']);
 
         <div class="sidebar-footer">
             <div class="user-profile">
-                <div class="user-avatar">
-                    <!-- <?= strtoupper(substr($_SESSION['username'], 0, 1)) ?> -->
-                </div>
+                <div class="user-avatar"><?= $avatarInitial ?></div>
                 <div class="user-info">
-                    <div class="user-name">
-                        <!-- <?= htmlspecialchars($_SESSION['username']) ?> -->
-                    </div>
-                    <div class="user-email">
-                        <!-- <?= htmlspecialchars($_SESSION['email']) ?> -->
-                    </div>
+                    <div class="user-name"><?= htmlspecialchars($username) ?></div>
+                    <?php if (!empty($email)): ?>
+                        <div class="user-email"><?= htmlspecialchars($email) ?></div>
+                    <?php endif; ?>
                 </div>
                 <i class="fas fa-chevron-down"></i>
             </div>
@@ -195,36 +195,3 @@ $notes = $notesModel->getNotes($_SESSION['user_id']);
     <script src="../js/note.js"></script>
 </body>
 </html>
-
-
-
-
-
-<!-- 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Notes</title>
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-    <div class="container">
-        <h2>Uploaded Notes</h2>
-        <a href="upload.php" class="btn">Upload New Note</a>
-        <ul>
-            <?php foreach ($notes as $note): ?>
-                <li>
-                    <strong><?= htmlspecialchars($note['subject']) ?></strong> 
-                    <a href="<?= htmlspecialchars($note['file_path']) ?>" target="_blank">View</a>
-                    <form action="../controllers/delete_note.php" method="POST">
-                        <input type="hidden" name="note_id" value="<?= $note['id'] ?>">
-                        <button type="submit">Delete</button>
-                    </form>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-</body>
-</html> -->

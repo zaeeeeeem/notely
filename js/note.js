@@ -82,3 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     });
 });
+
+// Notification dropdown functionality
+document.querySelector('.notification-btn').addEventListener('click', function() {
+    // In a real app, this would toggle a notification dropdown
+    alert('You have 3 new notifications');
+});

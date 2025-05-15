@@ -8,6 +8,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$userModel = new User($pdo);
+$user = $userModel->getUser($_SESSION['user_id']);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['note'])) {
     $subject = $_POST['subject'];
     $target_dir = "../public/uploads/";

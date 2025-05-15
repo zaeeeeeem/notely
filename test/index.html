@@ -1,616 +1,40 @@
+<?php
+session_start();
+require '../config/db.php';
+require '../models/Notes.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../public/login.php");
+    exit;
+}
+
+$notesModel = new Notes($pdo);
+$notes = $notesModel->getNotes($_SESSION['user_id']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notely - Dashboard</title>
+    <title>My Notes | Notely</title>
+    <link rel="stylesheet" href="../css/note.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #dc3636;
-            --primary-dark: #dc3636;
-            --secondary: #f59e0b;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --bg: #ffffff;
-            --bg-light: #f8fafc;
-            --sidebar-bg: #1e293b;
-            --sidebar-text: #e2e8f0;
-            --sidebar-active: rgba(99, 102, 241, 0.2);
-            --border: #e2e8f0;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
-            color: var(--text);
-            background-color: var(--bg-light);
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background-color: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            padding: 30px 0;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 0 25px 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            font-weight: 700;
-            font-size: 22px;
-            text-decoration: none;
-            color: var(--sidebar-text);
-        }
-
-        .logo img {
-            height: 32px;
-            margin-right: 10px;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 15px;
-        }
-
-        .nav-item {
-            margin-bottom: 5px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--sidebar-text);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--sidebar-active);
-            color: white;
-        }
-
-        .nav-link i {
-            width: 24px;
-            margin-right: 12px;
-            font-size: 18px;
-            text-align: center;
-        }
-
-        .sidebar-footer {
-            padding: 20px 25px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 20px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .user-profile:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 500;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-
-        .user-email {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            background-color: var(--bg);
-            box-shadow: 0 1px 0 var(--border);
-            z-index: 10;
-        }
-
-        .search-bar {
-            position: relative;
-            width: 400px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .search-bar i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-        }
-
-        .top-bar-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .notification-btn, .logout-btn {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 18px;
-            cursor: pointer;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        .notification-btn:hover, .logout-btn:hover {
-            color: var(--primary);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: var(--error);
-            color: white;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Dashboard Content */
-        .dashboard-content {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-            z-index: 0;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .welcome-content {
-            position: relative;
-            z-index: 1;
-            max-width: 600px;
-        }
-
-        .welcome-content h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .welcome-content p {
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background-color: white;
-            color: var(--primary);
-        }
-
-        .btn-primary:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-left: 10px;
-        }
-
-        .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Dashboard Sections */
-        .dashboard-section {
-            margin-bottom: 30px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-header h2 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .section-header a {
-            color: var(--primary);
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .section-header a:hover {
-            text-decoration: underline;
-        }
-
-        /* Subjects Grid */
-        .subjects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .subject-card {
-            background-color: var(--bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary);
-        }
-
-        .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        .subject-card h3 {
-            font-size: 16px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .subject-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background-color: rgba(99, 102, 241, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-size: 16px;
-        }
-
-        .subject-stats {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Recent Activity */
-        .activity-list {
-            background-color: var(--bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-        }
-
-        .activity-item {
-            display: flex;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-item:hover {
-            background-color: var(--bg-light);
-        }
-
-        .activity-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--bg-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            color: var(--primary);
-            font-size: 14px;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-title {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .activity-description {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-        .activity-time {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .action-card {
-            flex: 1;
-            background-color: var(--bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        .action-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: rgba(99, 102, 241, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            color: var(--primary);
-            font-size: 20px;
-        }
-
-        .action-card h3 {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .action-card p {
-            font-size: 13px;
-            color: var(--text-light);
-            margin-bottom: 15px;
-        }
-
-        /* Animations */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .sidebar {
-                width: 240px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-                overflow: hidden;
-            }
-            .sidebar-header .logo span,
-            .nav-link span,
-            .user-info {
-                display: none;
-            }
-            .nav-link {
-                justify-content: center;
-                padding: 12px;
-            }
-            .nav-link i {
-                margin-right: 0;
-            }
-            .sidebar-header {
-                padding: 0 15px 30px;
-            }
-            .search-bar {
-                width: 250px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .quick-actions {
-                flex-direction: column;
-            }
-            .search-bar {
-                width: 180px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .sidebar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 60px;
-                flex-direction: row;
-                padding: 0;
-                z-index: 100;
-            }
-            .sidebar-header, .sidebar-footer {
-                display: none;
-            }
-            .sidebar-nav {
-                display: flex;
-                flex: 1;
-                padding: 0;
-            }
-            .nav-item {
-                flex: 1;
-                margin-bottom: 0;
-            }
-            .nav-link {
-                height: 60px;
-                border-radius: 0;
-            }
-            .main-content {
-                padding-bottom: 60px;
-            }
-            .top-bar {
-                padding: 15px;
-            }
-            .dashboard-content {
-                padding: 20px 15px;
-            }
-            .welcome-banner {
-                padding: 20px;
-            }
-            .welcome-content h1 {
-                font-size: 22px;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="dashboard.php" class="logo">
+                <img src="https://via.placeholder.com/32x32" alt="Notely Logo">
                 <span>Notely</span>
             </a>
         </div>
 
         <nav class="sidebar-nav">
             <div class="nav-item">
-                <a href="dashboard.php" class="nav-link active">
+                <a href="dashboard.php" class="nav-link">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
@@ -622,7 +46,7 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="notes.php" class="nav-link">
+                <a href="notes.php" class="nav-link active">
                     <i class="fas fa-file-alt"></i>
                     <span>Notes</span>
                 </a>
@@ -649,10 +73,10 @@
 
         <div class="sidebar-footer">
             <div class="user-profile">
-                <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
+                <div class="user-avatar"><?= strtoupper(substr($_SESSION['username'], 0, 1)) ?></div>
                 <div class="user-info">
-                    <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
-                    <div class="user-email"><?= htmlspecialchars($user['email']) ?></div>
+                    <div class="user-name"><?= htmlspecialchars($_SESSION['username']) ?></div>
+                    <div class="user-email"><?= htmlspecialchars($_SESSION['email']) ?></div>
                 </div>
                 <i class="fas fa-chevron-down"></i>
             </div>
@@ -665,7 +89,7 @@
         <div class="top-bar">
             <div class="search-bar">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search notes, flashcards...">
+                <input type="text" placeholder="Search notes...">
             </div>
 
             <div class="top-bar-actions">
@@ -679,204 +103,89 @@
             </div>
         </div>
 
-        <!-- Dashboard Content -->
-        <div class="dashboard-content">
-            <!-- Welcome Banner -->
-            <div class="welcome-banner">
-                <div class="welcome-content">
-                    <h1>Welcome back, <?= htmlspecialchars($user['username']) ?> 👋</h1>
-                    <p>You have 3 new notes and 2 study sessions scheduled today. Let's make the most of your study time!</p>
-                    <div>
-                        <a href="upload.php" class="btn btn-primary">Upload New Notes</a>
-                        <a href="flashcards.php" class="btn btn-secondary">Create Flashcards</a>
-                    </div>
-                </div>
+        <!-- Notes Content -->
+        <div class="notes-content">
+            <div class="page-header">
+                <h1>My Notes</h1>
+                <button id="uploadBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Upload New Note
+                </button>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <div class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-upload"></i>
-                    </div>
-                    <h3>Upload Notes</h3>
-                    <p>Digitize your handwritten notes with our easy upload</p>
-                    <a href="upload.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Get Started</a>
+            <?php if (empty($notes)): ?>
+                <div class="empty-state">
+                    <i class="fas fa-file-upload"></i>
+                    <h3>No Notes Yet</h3>
+                    <p>Upload your first handwritten note to get started with Notely</p>
+                    <button id="uploadEmptyBtn" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Upload Note
+                    </button>
                 </div>
-                <div class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <h3>Create Flashcards</h3>
-                    <p>Turn your notes into interactive flashcards</p>
-                    <a href="flashcards.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Start Creating</a>
+            <?php else: ?>
+                <div class="notes-grid">
+                    <?php foreach ($notes as $note): ?>
+                        <div class="note-card">
+                            <div class="note-header">
+                                <div class="note-subject"><?= htmlspecialchars($note['subject']) ?></div>
+                                <div class="note-date"><?= date('M j, Y', strtotime($note['created_at'])) ?></div>
+                            </div>
+                            
+                            <div class="note-preview">
+                                <?php if (strpos($note['file_path'], '.pdf') !== false): ?>
+                                    <i class="fas fa-file-pdf file-icon"></i>
+                                <?php else: ?>
+                                    <img src="<?= htmlspecialchars($note['file_path']) ?>" alt="Note preview">
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div class="note-actions">
+                                <a href="<?= htmlspecialchars($note['file_path']) ?>" target="_blank" class="action-btn view-btn">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <form action="../controllers/delete_note.php" method="POST" style="flex: 1;">
+                                    <input type="hidden" name="note_id" value="<?= $note['id'] ?>">
+                                    <button type="submit" class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-                <div class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3>Plan Study</h3>
-                    <p>Schedule your study sessions for better retention</p>
-                    <a href="study-sessions.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Plan Now</a>
-                </div>
-            </div>
-
-            <!-- Subjects Section -->
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2>Your Subjects</h2>
-                    <a href="subjects.php">
-                        View All
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </div>
-
-                <div class="subjects-grid">
-                    <div class="subject-card">
-                        <h3>
-                            <div class="subject-icon">
-                                <i class="fas fa-atom"></i>
-                            </div>
-                            Chemistry
-                        </h3>
-                        <p>Organic chemistry notes from last week's lecture</p>
-                        <div class="subject-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-file-alt"></i>
-                                <span>12 Notes</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-layer-group"></i>
-                                <span>45 Flashcards</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="subject-card">
-                        <h3>
-                            <div class="subject-icon">
-                                <i class="fas fa-calculator"></i>
-                            </div>
-                            Mathematics
-                        </h3>
-                        <p>Calculus problems and solutions</p>
-                        <div class="subject-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-file-alt"></i>
-                                <span>8 Notes</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-layer-group"></i>
-                                <span>32 Flashcards</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="subject-card">
-                        <h3>
-                            <div class="subject-icon">
-                                <i class="fas fa-dna"></i>
-                            </div>
-                            Biology
-                        </h3>
-                        <p>Cell biology and genetics notes</p>
-                        <div class="subject-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-file-alt"></i>
-                                <span>15 Notes</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-layer-group"></i>
-                                <span>60 Flashcards</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2>Recent Activity</h2>
-                    <a href="activity.php">
-                        View All
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </div>
-
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-upload"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Uploaded new notes</div>
-                            <div class="activity-description">Organic Chemistry - Chapter 3: Alkenes and Alkynes</div>
-                            <div class="activity-time">
-                                <i class="far fa-clock"></i>
-                                <span>2 hours ago</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Created flashcards</div>
-                            <div class="activity-description">10 new flashcards for Calculus exam</div>
-                            <div class="activity-time">
-                                <i class="far fa-clock"></i>
-                                <span>Yesterday</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Completed study session</div>
-                            <div class="activity-description">Reviewed 25 Biology flashcards with 92% accuracy</div>
-                            <div class="activity-time">
-                                <i class="far fa-clock"></i>
-                                <span>2 days ago</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
     </main>
 
-    <script>
-        // Mobile sidebar toggle (for responsive)
-        document.querySelector('.user-profile').addEventListener('click', function() {
-            const sidebar = document.querySelector('.sidebar');
-            if (window.innerWidth <= 576) {
-                sidebar.classList.toggle('expanded');
-            }
-        });
-
-        // Notification dropdown functionality
-        document.querySelector('.notification-btn').addEventListener('click', function() {
-            // In a real app, this would toggle a notification dropdown
-            alert('You have 3 new notifications');
-        });
-
-        // Simulate loading animation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add animation class to cards
-            const cards = document.querySelectorAll('.subject-card, .action-card, .activity-item');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'all 0.5s ease ' + (index * 0.1) + 's';
+    <!-- Upload Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload New Note</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form action="../controllers/upload.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" class="form-control" placeholder="e.g. Chemistry, Mathematics" required>
+                </div>
                 
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 100);
-            });
-        });
-    </script>
+                <div class="form-group">
+                    <label>Upload Note</label>
+                    <div class="file-upload">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <span class="file-info">JPG, PNG, or PDF (Max 10MB)</span>
+                        <input type="file" name="note" accept="image/*,application/pdf" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-upload"></i> Upload Note
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/note.js"></script>
 </body>
 </html>

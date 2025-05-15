@@ -29,7 +29,7 @@ require '../controllers/dashboard.php';
                 </a>
             </div>
             <div class="nav-item">
-                <a href="subjects.php" class="nav-link">
+                <a href="#" class="nav-link">
                     <i class="fas fa-book"></i>
                     <span>My Subjects</span>
                 </a>
@@ -47,13 +47,13 @@ require '../controllers/dashboard.php';
                 </a>
             </div>
             <div class="nav-item">
-                <a href="study-sessions.php" class="nav-link">
+                <a href="#" class="nav-link">
                     <i class="fas fa-clock"></i>
                     <span>Study Sessions</span>
                 </a>
             </div>
             <div class="nav-item">
-                <a href="analytics.php" class="nav-link">
+                <a href="#" class="nav-link">
                     <i class="fas fa-chart-bar"></i>
                     <span>Analytics</span>
                 </a>
@@ -136,7 +136,7 @@ require '../controllers/dashboard.php';
                     </div>
                     <h3>Plan Study</h3>
                     <p>Schedule your study sessions for better retention</p>
-                    <a href="study-sessions.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Plan Now</a>
+                    <a href="#" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Plan Now</a>
                 </div>
             </div>
 
@@ -144,7 +144,7 @@ require '../controllers/dashboard.php';
             <div class="dashboard-section">
                 <div class="section-header">
                     <h2>Your Subjects</h2>
-                    <a href="subjects.php">
+                    <a href="#">
                         View All
                         <i class="fas fa-chevron-right"></i>
                     </a>
@@ -215,7 +215,7 @@ require '../controllers/dashboard.php';
             <div class="dashboard-section">
                 <div class="section-header">
                     <h2>Recent Activity</h2>
-                    <a href="activity.php">
+                    <a href="#">
                         View All
                         <i class="fas fa-chevron-right"></i>
                     </a>

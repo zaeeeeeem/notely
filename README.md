@@ -2,7 +2,7 @@
 
 **Your ultimate SaaS platform for managing handwritten notes & flashcards.**
 
-![Notely Banner](\img\banner.jpg)
+![Notely Banner](img/banner.jpg)
 
 ---
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notely - Login to Your Account</title>
+    <title>Notely - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -15,9 +15,15 @@
             --text-light: #64748b;
             --bg: #ffffff;
             --bg-light: #f8fafc;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #e2e8f0;
+            --sidebar-active: rgba(99, 102, 241, 0.2);
             --border: #e2e8f0;
             --success: #10b981;
+            --warning: #f59e0b;
             --error: #ef4444;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -30,139 +36,161 @@
         body {
             color: var(--text);
             background-color: var(--bg-light);
-            line-height: 1.5;
             display: flex;
             min-height: 100vh;
         }
 
-        /* Left Side - Illustration */
-        .login-illustration {
-            flex: 1;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 30px 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            color: white;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .login-illustration::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-            z-index: 1;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .illustration-content {
-            position: relative;
-            z-index: 2;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .illustration-content h2 {
-            font-size: 32px;
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
-            font-weight: 700;
         }
 
-        .illustration-content p {
-            opacity: 0.9;
-            margin-bottom: 30px;
-        }
-
-        .illustration-img {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        /* Right Side - Login Form */
-        .login-form-container {
-            width: 450px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px 40px;
-            background-color: var(--bg);
-        }
-
-        .login-header {
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .login-header .logo {
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             font-weight: 700;
-            font-size: 24px;
+            font-size: 22px;
             text-decoration: none;
-            color: var(--text);
-            margin-bottom: 20px;
+            color: var(--sidebar-text);
         }
 
-        .login-header .logo img {
+        .logo img {
             height: 32px;
             margin-right: 10px;
         }
 
-        .login-header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 15px;
         }
 
-        .login-header p {
-            color: var(--text-light);
+        .nav-item {
+            margin-bottom: 5px;
         }
 
-        .login-form {
+        .nav-link {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px 12px 40px;
-            border: 1px solid var(--border);
+            align-items: center;
+            padding: 12px 20px;
             border-radius: 8px;
-            font-size: 15px;
+            text-decoration: none;
+            color: var(--sidebar-text);
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
-        .form-control:focus {
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--sidebar-active);
+            color: white;
+        }
+
+        .nav-link i {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 20px 25px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--bg);
+            box-shadow: 0 1px 0 var(--border);
+            z-index: 10;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
-        .input-icon {
+        .search-bar i {
             position: absolute;
             left: 12px;
             top: 50%;
@@ -170,42 +198,94 @@
             color: var(--text-light);
         }
 
-        .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .remember-me {
+        .top-bar-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 20px;
         }
 
-        .remember-me input {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--primary);
+        .notification-btn, .logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 18px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
         }
 
-        .forgot-password {
+        .notification-btn:hover, .logout-btn:hover {
             color: var(--primary);
-            text-decoration: none;
         }
 
-        .forgot-password:hover {
-            text-decoration: underline;
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--error);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .welcome-content h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-content p {
+            opacity: 0.9;
+            margin-bottom: 20px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -213,61 +293,217 @@
         }
 
         .btn-primary {
-            background-color: var(--primary);
-            color: white;
+            background-color: white;
+            color: var(--primary);
         }
 
         .btn-primary:hover {
-            background-color: var(--primary-dark);
+            background-color: rgba(255, 255, 255, 0.9);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-google {
-            background-color: white;
-            color: var(--text);
-            border: 1px solid var(--border);
-            gap: 8px;
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: 10px;
         }
 
-        .btn-google:hover {
-            background-color: var(--bg-light);
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        .divider {
+        /* Dashboard Sections */
+        .dashboard-section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .section-header a {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .section-header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Subjects Grid */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .subject-card {
+            background-color: var(--bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .subject-card h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 10px 0;
-            color: var(--text-light);
-            font-size: 14px;
         }
 
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background-color: var(--border);
-        }
-
-        .signup-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .signup-link a {
+        .subject-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
+            font-size: 16px;
         }
 
-        .signup-link a:hover {
-            text-decoration: underline;
+        .subject-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            background-color: var(--bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .activity-item {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background-color: var(--bg-light);
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .activity-description {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            flex: 1;
+            background-color: var(--bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .action-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .action-card p {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 15px;
         }
 
         /* Animations */
@@ -277,196 +513,369 @@
             100% { transform: translateY(0px); }
         }
 
-        /* Error State */
-        .error-message {
-            color: var(--error);
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .has-error .form-control {
-            border-color: var(--error);
-        }
-
-        .has-error .input-icon {
-            color: var(--error);
-        }
-
-        .has-error .error-message {
-            display: block;
-        }
-
         /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 240px;
+            }
+        }
+
         @media (max-width: 992px) {
-            .login-illustration {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            .sidebar-header .logo span,
+            .nav-link span,
+            .user-info {
                 display: none;
             }
+            .nav-link {
+                justify-content: center;
+                padding: 12px;
+            }
+            .nav-link i {
+                margin-right: 0;
+            }
+            .sidebar-header {
+                padding: 0 15px 30px;
+            }
+            .search-bar {
+                width: 250px;
+            }
+        }
 
-            .login-form-container {
-                width: 100%;
-                max-width: 500px;
-                margin: 0 auto;
-                padding: 40px 20px;
+        @media (max-width: 768px) {
+            .quick-actions {
+                flex-direction: column;
+            }
+            .search-bar {
+                width: 180px;
             }
         }
 
         @media (max-width: 576px) {
-            .remember-forgot {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                flex-direction: row;
+                padding: 0;
+                z-index: 100;
             }
-
-            .login-header h1 {
-                font-size: 20px;
+            .sidebar-header, .sidebar-footer {
+                display: none;
+            }
+            .sidebar-nav {
+                display: flex;
+                flex: 1;
+                padding: 0;
+            }
+            .nav-item {
+                flex: 1;
+                margin-bottom: 0;
+            }
+            .nav-link {
+                height: 60px;
+                border-radius: 0;
+            }
+            .main-content {
+                padding-bottom: 60px;
+            }
+            .top-bar {
+                padding: 15px;
+            }
+            .dashboard-content {
+                padding: 20px 15px;
+            }
+            .welcome-banner {
+                padding: 20px;
+            }
+            .welcome-content h1 {
+                font-size: 22px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Left Side - Illustration -->
-    <div class="login-illustration">
-        <div class="illustration-content">
-            <h2>Welcome back to Notely</h2>
-            <p>Continue your journey to organized, efficient studying with your digitized notes and flashcards.</p>
-            <img src="https://illustrations.popsy.co/amber/student-taking-notes.svg" alt="Student taking notes" class="illustration-img">
-        </div>
-    </div>
-
-    <!-- Right Side - Login Form -->
-    <div class="login-form-container">
-        <div class="login-header">
-            <a href="#" class="logo">
-                <img src="https://via.placeholder.com/32x32" alt="Notely Logo">
-                Notely
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.php" class="logo">
+                <span>Notely</span>
             </a>
-            <h1>Log in to your account</h1>
-            <p>Welcome back! Please enter your details.</p>
         </div>
 
-        <form class="login-form" id="loginForm">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="dashboard.php" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="subjects.php" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span>My Subjects</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="notes.php" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Notes</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="flashcards.php" class="nav-link">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Flashcards</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="study-sessions.php" class="nav-link">
+                    <i class="fas fa-clock"></i>
+                    <span>Study Sessions</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="analytics.php" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar"><?= strtoupper(substr($user['username'], 0, 1)) ?></div>
+                <div class="user-info">
+                    <div class="user-name"><?= htmlspecialchars($user['username']) ?></div>
+                    <div class="user-email"><?= htmlspecialchars($user['email']) ?></div>
                 </div>
-                <div class="error-message">Please enter a valid email address</div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search notes, flashcards...">
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+            <div class="top-bar-actions">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <a href="../controllers/logout.php" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h1>Welcome back, <?= htmlspecialchars($user['username']) ?> 👋</h1>
+                    <p>You have 3 new notes and 2 study sessions scheduled today. Let's make the most of your study time!</p>
+                    <div>
+                        <a href="upload.php" class="btn btn-primary">Upload New Notes</a>
+                        <a href="flashcards.php" class="btn btn-secondary">Create Flashcards</a>
+                    </div>
                 </div>
-                <div class="error-message">Password must be at least 8 characters</div>
             </div>
 
-            <div class="remember-forgot">
-                <label class="remember-me">
-                    <input type="checkbox" id="remember">
-                    Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot password?</a>
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h3>Upload Notes</h3>
+                    <p>Digitize your handwritten notes with our easy upload</p>
+                    <a href="upload.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Get Started</a>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3>Create Flashcards</h3>
+                    <p>Turn your notes into interactive flashcards</p>
+                    <a href="flashcards.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Start Creating</a>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Plan Study</h3>
+                    <p>Schedule your study sessions for better retention</p>
+                    <a href="study-sessions.php" class="btn btn-primary" style="padding: 8px 15px; width: 100%;">Plan Now</a>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Sign In</button>
+            <!-- Subjects Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Your Subjects</h2>
+                    <a href="subjects.php">
+                        View All
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
 
-            <div class="divider">or</div>
-
-            <button type="button" class="btn btn-google">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo" width="20">
-                Sign in with Google
-            </button>
-
-            <div class="signup-link">
-                Don't have an account? <a href="#">Sign up</a>
+                <div class="subjects-grid">
+                    <div class="subject-card">
+                        <h3>
+                            <div class="subject-icon">
+                                <i class="fas fa-atom"></i>
+                            </div>
+                            Chemistry
+                        </h3>
+                        <p>Organic chemistry notes from last week's lecture</p>
+                        <div class="subject-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-file-alt"></i>
+                                <span>12 Notes</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span>45 Flashcards</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="subject-card">
+                        <h3>
+                            <div class="subject-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            Mathematics
+                        </h3>
+                        <p>Calculus problems and solutions</p>
+                        <div class="subject-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-file-alt"></i>
+                                <span>8 Notes</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span>32 Flashcards</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="subject-card">
+                        <h3>
+                            <div class="subject-icon">
+                                <i class="fas fa-dna"></i>
+                            </div>
+                            Biology
+                        </h3>
+                        <p>Cell biology and genetics notes</p>
+                        <div class="subject-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-file-alt"></i>
+                                <span>15 Notes</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span>60 Flashcards</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                    <a href="activity.php">
+                        View All
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Uploaded new notes</div>
+                            <div class="activity-description">Organic Chemistry - Chapter 3: Alkenes and Alkynes</div>
+                            <div class="activity-time">
+                                <i class="far fa-clock"></i>
+                                <span>2 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Created flashcards</div>
+                            <div class="activity-description">10 new flashcards for Calculus exam</div>
+                            <div class="activity-time">
+                                <i class="far fa-clock"></i>
+                                <span>Yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Completed study session</div>
+                            <div class="activity-description">Reviewed 25 Biology flashcards with 92% accuracy</div>
+                            <div class="activity-time">
+                                <i class="far fa-clock"></i>
+                                <span>2 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // Form validation
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(String(email).toLowerCase());
-        }
-
-        function validatePassword(password) {
-            return password.length >= 8;
-        }
-
-        function showError(input, message) {
-            const formGroup = input.closest('.form-group');
-            formGroup.classList.add('has-error');
-            const errorMessage = formGroup.querySelector('.error-message');
-            errorMessage.textContent = message;
-        }
-
-        function removeError(input) {
-            const formGroup = input.closest('.form-group');
-            formGroup.classList.remove('has-error');
-        }
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            let isValid = true;
-
-            // Validate email
-            if (!validateEmail(emailInput.value.trim())) {
-                showError(emailInput, 'Please enter a valid email address');
-                isValid = false;
-            } else {
-                removeError(emailInput);
+        // Mobile sidebar toggle (for responsive)
+        document.querySelector('.user-profile').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth <= 576) {
+                sidebar.classList.toggle('expanded');
             }
+        });
 
-            // Validate password
-            if (!validatePassword(passwordInput.value.trim())) {
-                showError(passwordInput, 'Password must be at least 8 characters');
-                isValid = false;
-            } else {
-                removeError(passwordInput);
-            }
+        // Notification dropdown functionality
+        document.querySelector('.notification-btn').addEventListener('click', function() {
+            // In a real app, this would toggle a notification dropdown
+            alert('You have 3 new notifications');
+        });
 
-            if (isValid) {
-                // Simulate form submission
-                console.log('Form submitted:', {
-                    email: emailInput.value.trim(),
-                    password: passwordInput.value.trim(),
-                    remember: document.getElementById('remember').checked
-                });
-
-                // In a real app, you would send this data to your server
-                // window.location.href = '/dashboard';
+        // Simulate loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation class to cards
+            const cards = document.querySelectorAll('.subject-card, .action-card, .activity-item');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease ' + (index * 0.1) + 's';
                 
-                // For demo purposes, show success
-                alert('Login successful! Redirecting to dashboard...');
-            }
-        });
-
-        // Real-time validation
-        emailInput.addEventListener('input', function() {
-            if (validateEmail(emailInput.value.trim())) {
-                removeError(emailInput);
-            }
-        });
-
-        passwordInput.addEventListener('input', function() {
-            if (validatePassword(passwordInput.value.trim())) {
-                removeError(passwordInput);
-            }
-        });
-
-        // Forgot password handler
-        document.querySelector('.forgot-password').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Password reset link will be sent to your email if it exists in our system.');
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
         });
     </script>
 </body>

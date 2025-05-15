@@ -9,7 +9,7 @@ class User {
     }
 
     public function getUser($id) {
-        $stmt = $this->pdo->prepare("SELECT username FROM users WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT username, email FROM users WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }

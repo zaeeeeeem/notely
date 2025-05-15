@@ -2,7 +2,7 @@
 
 **Your ultimate SaaS platform for managing handwritten notes & flashcards.**
 
-![Notely Banner](https://your-image-url.com)
+![Notely Banner]("\img\banner.jpg")
 
 ---
 
@@ -71,7 +71,7 @@ Ensure you have:
 ### == 2️⃣ Clone the repository
 
 ```sh
-git clone https://github.com/your-github/notely.git
+git clone https://github.com/zaeeeeeem/notely.git
 cd notely
 ```
 
@@ -104,15 +104,9 @@ your browser will load the app! 🎉
 
 ---
 
-## 🎨 UI Preview
-
-* Dashboard Preview (Add screenshots here)
-
----
-
 ## 👨‍💻 Contributors
 
-* **Muhammad** ([GitHub](https://github.com/your-username))
+* **Muhammad Zaeem Ul Hassan** ([GitHub](https://github.com/zaeeeeeem))
 * **Copilot** (AI-powered assistance 🤖)
 
 ---

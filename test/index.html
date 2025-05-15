@@ -3,243 +3,471 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notely - Digitize & Organize Your Handwritten Notes</title>
+    <title>Notely - Login to Your Account</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+    <style>
+        :root {
+            --primary: #dc3636;
+            --primary-dark: #dc3636;
+            --secondary: #f59e0b;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #ffffff;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            color: var(--text);
+            background-color: var(--bg-light);
+            line-height: 1.5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Side - Illustration */
+        .login-illustration {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-illustration::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            z-index: 1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .illustration-content {
+            position: relative;
+            z-index: 2;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .illustration-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .illustration-content p {
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .illustration-img {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Right Side - Login Form */
+        .login-form-container {
+            width: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 40px;
+            background-color: var(--bg);
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .login-header .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            text-decoration: none;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .login-header .logo img {
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-google {
+            background-color: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            gap: 8px;
+        }
+
+        .btn-google:hover {
+            background-color: var(--bg-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Error State */
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .has-error .form-control {
+            border-color: var(--error);
+        }
+
+        .has-error .input-icon {
+            color: var(--error);
+        }
+
+        .has-error .error-message {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .login-illustration {
+                display: none;
+            }
+
+            .login-form-container {
+                width: 100%;
+                max-width: 500px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .login-header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
 <body>
-    <header id="header">
-        <div class="container header-container">
+    <!-- Left Side - Illustration -->
+    <div class="login-illustration">
+        <div class="illustration-content">
+            <h2>Welcome back to Notely</h2>
+            <p>Continue your journey to organized, efficient studying with your digitized notes and flashcards.</p>
+            <img src="https://illustrations.popsy.co/amber/student-taking-notes.svg" alt="Student taking notes" class="illustration-img">
+        </div>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="login-form-container">
+        <div class="login-header">
             <a href="#" class="logo">
                 <img src="https://via.placeholder.com/32x32" alt="Notely Logo">
                 Notely
             </a>
-            <nav>
-                <ul id="nav-menu">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#reviews">Reviews</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                </ul>
-            </nav>
-            <button class="mobile-menu-btn" id="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
+            <h1>Log in to your account</h1>
+            <p>Welcome back! Please enter your details.</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="error-message">Please enter a valid email address</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                <div class="error-message">Password must be at least 8 characters</div>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember">
+                    Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sign In</button>
+
+            <div class="divider">or</div>
+
+            <button type="button" class="btn btn-google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo" width="20">
+                Sign in with Google
             </button>
-        </div>
-    </header>
 
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h1 class="animate-slide-up">Digitize & Organize Your Handwritten Notes</h1>
-                <p class="animate-slide-up animate-delay-1">Upload note images, categorize by subject, and create flashcards for smarter studying.</p>
-                <div class="cta-buttons animate-slide-up animate-delay-2">
-                    <a href="#get-started" class="btn btn-primary">Get Started for Free</a>
-                    <a href="#" class="btn btn-secondary">
-                        <i class="fas fa-play-circle"></i> Watch Demo
-                    </a>
-                </div>
-                <img src="https://via.placeholder.com/1000x600" alt="Notely Dashboard" class="hero-image animate-slide-up animate-delay-3">
+            <div class="signup-link">
+                Don't have an account? <a href="#">Sign up</a>
             </div>
-        </section>
+        </form>
+    </div>
 
-        <section class="features" id="features">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="animate-fade">Transform Your Study Habits</h2>
-                    <p class="animate-fade animate-delay-1">Notely helps you study smarter, not harder with these powerful features</p>
-                </div>
-                <div class="features-grid">
-                    <div class="feature-card animate-slide-up">
-                        <div class="feature-icon">
-                            <i class="fas fa-upload"></i>
-                        </div>
-                        <h3>Easy Upload</h3>
-                        <p>Simply snap a photo of your handwritten notes and upload them to Notely for instant digitization.</p>
-                    </div>
-                    <div class="feature-card animate-slide-up animate-delay-1">
-                        <div class="feature-icon">
-                            <i class="fas fa-folder-open"></i>
-                        </div>
-                        <h3>Smart Organization</h3>
-                        <p>Categorize notes by subject, topic, or date. Never lose an important note again.</p>
-                    </div>
-                    <div class="feature-card animate-slide-up animate-delay-2">
-                        <div class="feature-icon">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <h3>Flashcard Generator</h3>
-                        <p>Automatically convert your notes into flashcards for efficient memorization and review.</p>
-                    </div>
-                    <div class="feature-card animate-slide-up">
-                        <div class="feature-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h3>Powerful Search</h3>
-                        <p>Find any note instantly with our OCR-powered search that reads your handwriting.</p>
-                    </div>
-                    <div class="feature-card animate-slide-up animate-delay-1">
-                        <div class="feature-icon">
-                            <i class="fas fa-sync-alt"></i>
-                        </div>
-                        <h3>Multi-Device Sync</h3>
-                        <p>Access your notes anywhere, anytime. Works across all your devices seamlessly.</p>
-                    </div>
-                    <div class="feature-card animate-slide-up animate-delay-2">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3>Study Analytics</h3>
-                        <p>Track your study patterns and identify areas that need more focus with detailed analytics.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <script>
+        // Form validation
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
 
-        <section class="how-it-works" id="how-it-works">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="animate-fade">How Notely Works</h2>
-                    <p class="animate-fade animate-delay-1">Get started in just a few simple steps</p>
-                </div>
-                <div class="steps">
-                    <div class="step animate-slide-up">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Upload Your Notes</h3>
-                            <p>Take photos of your handwritten notes or upload existing images from your device.</p>
-                        </div>
-                    </div>
-                    <div class="step animate-slide-up animate-delay-1">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Organize & Categorize</h3>
-                            <p>Tag your notes by subject, topic, or date. Create custom notebooks for different classes.</p>
-                        </div>
-                    </div>
-                    <div class="step animate-slide-up animate-delay-2">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Enhance & Study</h3>
-                            <p>Convert notes to flashcards, highlight important sections, and share with study groups.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
 
-        <section class="reviews" id="reviews">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="animate-fade">What Students Are Saying</h2>
-                    <p class="animate-fade animate-delay-1">Trusted by thousands of students worldwide</p>
-                </div>
-                <div class="reviews-container">
-                    <div class="reviews-carousel" id="reviews-carousel">
-                        <div class="review-card">
-                            <div class="review-content">
-                                <p class="review-text">Notely has completely transformed how I study. Being able to search through my handwritten notes has saved me countless hours. The flashcard feature is a game-changer!</p>
-                                <div class="review-author">
-                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah J." class="author-avatar">
-                                    <div class="author-info">
-                                        <h4>Sarah J.</h4>
-                                        <p>Medical Student, Harvard</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-card">
-                            <div class="review-content">
-                                <p class="review-text">As someone who prefers handwriting notes but needs digital organization, Notely is the perfect solution. I've recommended it to all my study group members.</p>
-                                <div class="review-author">
-                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael T." class="author-avatar">
-                                    <div class="author-info">
-                                        <h4>Michael T.</h4>
-                                        <p>Engineering Student, MIT</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-card">
-                            <div class="review-content">
-                                <p class="review-text">The OCR search works surprisingly well with my messy handwriting. I can find any concept from my notes in seconds. Worth every penny for the premium version.</p>
-                                <div class="review-author">
-                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya K." class="author-avatar">
-                                    <div class="author-info">
-                                        <h4>Priya K.</h4>
-                                        <p>Law Student, Stanford</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-nav" id="carousel-nav">
-                        <div class="carousel-dot active"></div>
-                        <div class="carousel-dot"></div>
-                        <div class="carousel-dot"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
 
-        <section class="cta" id="get-started">
-            <div class="container">
-                <h2 class="animate-fade">Ready to Revolutionize Your Study Routine?</h2>
-                <p class="animate-fade animate-delay-1">Join thousands of students who are studying smarter with Notely</p>
-                <a href="#" class="btn btn-primary animate-fade animate-delay-2">Start Your Free Trial</a>
-            </div>
-        </section>
-    </main>
+        function showError(input, message) {
+            const formGroup = input.closest('.form-group');
+            formGroup.classList.add('has-error');
+            const errorMessage = formGroup.querySelector('.error-message');
+            errorMessage.textContent = message;
+        }
 
-    <footer>
-        <div class="container">
-            <div class="footer-container">
-                <div class="footer-col">
-                    <a href="#" class="logo">
-                        <img src="https://via.placeholder.com/32x32" alt="Notely Logo">
-                        Notely
-                    </a>
-                    <p>Helping students study smarter since 2023.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>Product</h3>
-                    <ul>
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Download</a></li>
-                        <li><a href="#">Updates</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Resources</h3>
-                    <ul>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Tutorials</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">API Docs</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Company</h3>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Press</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2023 Notely. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
-            </div>
-        </div>
-    </footer>
+        function removeError(input) {
+            const formGroup = input.closest('.form-group');
+            formGroup.classList.remove('has-error');
+        }
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Validate email
+            if (!validateEmail(emailInput.value.trim())) {
+                showError(emailInput, 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                removeError(emailInput);
+            }
+
+            // Validate password
+            if (!validatePassword(passwordInput.value.trim())) {
+                showError(passwordInput, 'Password must be at least 8 characters');
+                isValid = false;
+            } else {
+                removeError(passwordInput);
+            }
+
+            if (isValid) {
+                // Simulate form submission
+                console.log('Form submitted:', {
+                    email: emailInput.value.trim(),
+                    password: passwordInput.value.trim(),
+                    remember: document.getElementById('remember').checked
+                });
+
+                // In a real app, you would send this data to your server
+                // window.location.href = '/dashboard';
+                
+                // For demo purposes, show success
+                alert('Login successful! Redirecting to dashboard...');
+            }
+        });
+
+        // Real-time validation
+        emailInput.addEventListener('input', function() {
+            if (validateEmail(emailInput.value.trim())) {
+                removeError(emailInput);
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (validatePassword(passwordInput.value.trim())) {
+                removeError(passwordInput);
+            }
+        });
+
+        // Forgot password handler
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Password reset link will be sent to your email if it exists in our system.');
+        });
+    </script>
 </body>
 </html>
